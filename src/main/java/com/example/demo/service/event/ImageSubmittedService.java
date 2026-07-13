@@ -45,8 +45,7 @@ public class ImageSubmittedService implements Consumer<ImageSubmitted> {
   private byte[] toGrayscale(byte[] originalBytes, String extension) throws Exception {
     var original = ImageIO.read(new java.io.ByteArrayInputStream(originalBytes));
     var grayscale =
-        new BufferedImage(
-            original.getWidth(), original.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+        new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
     var graphics = grayscale.createGraphics();
     graphics.drawImage(original, 0, 0, null);
     graphics.dispose();
