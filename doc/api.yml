@@ -1,0 +1,94 @@
+openapi: 3.0.3
+
+info:
+  title: Image Submission API
+  description: API for submitting images and listing image submissions.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+
+paths:
+  /image-submissions:
+    post:
+      tags:
+        - Image Submission
+      summary: Submit an image
+      description: 
+        Upload a JPEG or PNG image associated with an email address.
+        The submission is stored synchronously and an asynchronous event
+        is published to generate a black-and-white version and send it by email.
+      operationId: submitImage
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+                - email
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: JPEG or PNG image
+                email:
+                  type: string
+                  format: email
+                  description: User email
+      responses:
+        "201":
+          description: Image successfully submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImageSubmission"
+
+        "400":
+          description: Invalid request (unsupported file type or missing parameters)
+
+    get:
+      tags:
+        - Image Submission
+      summary: List image submissions
+      description: Returns all submitted images.
+      operationId: getImageSubmissions
+      responses:
+        "200":
+          description: List of image submissions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ImageSubmission"
+
+components:
+  schemas:
+    ImageSubmission:
+      type: object
+      required:
+        - id
+        - fileName
+        - email
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 8d6d52f2-5bfb-4f85-a8c0-f35fc83df34d
+
+        fileName:
+          type: string
+          example: cat.png
+
+        email:
+          type: string
+          format: email
+          example: john.doe@example.com
+
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-07-13T09:30:00Z"
